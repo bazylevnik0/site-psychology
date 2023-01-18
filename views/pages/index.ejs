@@ -1,0 +1,108 @@
+ <!DOCTYPE html>
+<html>
+<head>
+  <%- include ("../partials/head.ejs") %>
+</head>
+
+<body>
+  <%- include ("../partials/header.ejs") %>
+  
+<main class="container">
+  <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+    <div class="col-md-6 px-0">
+      <h1 class="display-4 fst-italic">Психоло́гия </h1>
+      <p class="lead my-3"> (от др.-греч. ψυχή «душа; характер»; λόγος «учение») <br> гуманитарная научная дисциплина, изучающая закономерности возникновения, развития и функционирования психики и психической деятельности человека и групп людей..</p>
+      <p class="lead mb-0"><a href="https://ru.wikipedia.org/wiki/%D0%9F%D1%81%D0%B8%D1%85%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F" class="text-white fw-bold">Википедия</a></p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div id="div-articles" class="col-md-8"></div>
+
+    <div class="col-md-4">
+      <div class="position-sticky" style="top: 2rem;">
+        <div class="p-4 mb-3 bg-light rounded">
+          <h4 class="fst-italic">Здравствуйте!</h4>
+          <p class="mb-0">Здесь, на сайте, публикуются статьи о психологии, вы можете подписаться на рассылку, чтобы быть в курсе публикуемых статей.</p>
+        </div>
+
+        <div class="p-4">
+          <h4 class="fst-italic">Статьи:</h4>
+          <ol id="list-articles" class="list-unstyled mb-0"></ol>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</main>
+ 
+  <%- include ("../partials/footer.ejs") %>
+</body>
+</html>
+<script>
+	//articles buttons
+		//articles content
+	let articles = <%- inp %>;
+
+	var $divArticles  = $( "#div-articles" );
+	var $listArticles = $( "#list-articles" );
+	
+	let strDivArticles   = "";
+	let strListArticles  = "";
+
+	articles.forEach( el=> {
+	    strDivArticles  += ('<article id="' + 'art_' + el.title + '" class="blog-post"><div class="react-button"></div>' + el.body + '</article>' )
+	    strListArticles += ('<li><a href=' + '#' + 'art_' + el.title + ' ">' + el.title + '</a></li>')
+	})
+	let htmlDivArticles  = $.parseHTML( strDivArticles );
+	let htmlListArticles = $.parseHTML( strListArticles );
+	   $divArticles.append( htmlDivArticles ); 
+	   $listArticles.append( htmlListArticles ); 
+	   
+		//buttons component   
+	const  e = React.createElement;
+	class React_button extends React.Component {
+	  constructor(props) {
+	    super(props);
+	    this.state = { work: false };
+	  }
+
+	  render() {
+	    if (this.state.work) {
+		return "";
+	    }
+
+	    return e(
+	      'button',
+	      { 
+	        class  : "btn btn-light",
+	        onClick: (event) => {
+	        let parentArticle = event.target.parentElement.parentElement;
+	            parentArticle.style.height = "auto";
+	      	this.setState({ work: true })
+	        }
+	      },
+	      'Читать далее'
+	    );
+	  }
+	}
+		//buttons render
+	const react_buttons = document.querySelectorAll('.react-button');
+	react_buttons.forEach( el => { ReactDOM.render(e(React_button), el) } );
+</script>
+<script>
+	//subscribe
+	let link_subscribe = $("#link-subscribe");
+	$("#input-subscribe").keydown(function() {
+	console.log(link_subscribe,link_subscribe[0].href)
+		let link = "/subscribe/";
+		let mail   = this.value;
+		link_subscribe[0].href = link + mail;
+	})
+	
+	let check_subscribe = <%- subscribed %>; 
+	if (check_subscribe !== true) 
+		$("#i-subscribe").css("display" , "none");
+	else    $("#i-subscribe").css("display" , "block");	
+</script>
